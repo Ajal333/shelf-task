@@ -69,7 +69,7 @@ const Contacts = () => {
     () =>
       ({ item }) =>
         <ContactItem {...{ ...item }} />,
-    FormattedData
+    [FormattedData]
   );
 
   return (
