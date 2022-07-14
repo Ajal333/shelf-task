@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Pressable,
   SectionList,
@@ -65,7 +65,12 @@ const Contacts = () => {
     );
   };
 
-  const renderItem = ({ item }) => <ContactItem {...{ ...item }} />;
+  const renderItem = useMemo(
+    () =>
+      ({ item }) =>
+        <ContactItem {...{ ...item }} />,
+    FormattedData
+  );
 
   return (
     <View style={styles.container}>
