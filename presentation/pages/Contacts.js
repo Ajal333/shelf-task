@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Pressable,
   SectionList,
@@ -6,26 +6,36 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import ContactsData from "../common/ContactsData";
 
 const Contacts = () => {
+  const [search, setSearch] = useState("");
+
+  // Get contacts who are using the app
   const onShelfData = ContactsData?.filter((contact) => contact?.onShelf);
+
+  // Get contacts who are not using the app
   const notOnShelfData = ContactsData?.filter((contact) => !contact?.onShelf);
 
   const FormattedData = [
     {
       title: "Contacts already on Shelf",
-      data: onShelfData?.sort((a, b) =>
-        a?.first_name.localeCompare(b?.first_name)
-      ),
+      data: onShelfData
+        ?.filter((item) =>
+          item?.first_name?.toLowerCase().includes(search?.toLowerCase())
+        )
+        ?.sort((a, b) => a?.first_name.localeCompare(b?.first_name)),
     },
     {
       title: "Invite to Shelf",
-      data: notOnShelfData?.sort((a, b) =>
-        a?.first_name.localeCompare(b?.first_name)
-      ),
+      data: notOnShelfData
+        ?.filter((item) =>
+          item?.first_name?.toLowerCase().includes(search?.toLowerCase())
+        )
+        ?.sort((a, b) => a?.first_name.localeCompare(b?.first_name)),
     },
   ];
 
@@ -65,6 +75,7 @@ const Contacts = () => {
     );
   };
 
+  // Memorize the data to avoid useless re-render
   const renderItem = useMemo(
     () =>
       ({ item }) =>
@@ -76,6 +87,14 @@ const Contacts = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#000123" />
       <Text style={styles.heading}>Contacts</Text>
+      <TextInput
+        style={styles.inputField}
+        placeholder="Search..."
+        onChangeText={(text) => setSearch(text)}
+        value={search}
+        placeholderTextColor="#737373"
+        selectionColor="#03c12d"
+      />
       <SectionList
         sections={FormattedData}
         keyExtractor={(item, index) => item?.phone1 + index}
@@ -90,6 +109,7 @@ const Contacts = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingTop: 10,
     paddingHorizontal: 20,
     backgroundColor: "#000123",
@@ -128,6 +148,17 @@ const styles = StyleSheet.create({
   inviteText: {
     color: "#03c12d",
     fontSize: 16,
+  },
+  inputField: {
+    width: "100%",
+    height: 50,
+    marginVertical: 12,
+    borderWidth: 2,
+    padding: 10,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    color: "#000",
+    backgroundColor: "#fff",
   },
 });
 
